@@ -5,6 +5,6 @@ project Iterators is
    for Create_Missing_Dirs use "True";
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-gnata", "-gnatwa", "-gnat2022");
+      for Default_Switches ("Ada") use ("-gnatef","-gnata", "-gnatwa", "-gnat2022");
    end Compiler;
 end Iterators;
