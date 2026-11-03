@@ -14,7 +14,7 @@ with Nodes.Linked_Lists;
 -- [x] todo: use concurrency. some sort of dummy loop
 
 procedure Main is
-    package Natural_Nodes is new Nodes (Natural);
+    package Natural_Nodes is new Nodes (T => Natural);
     package Natural_Lists is new Natural_Nodes.Linked_Lists;
     use Natural_Nodes, Natural_Lists;
     List : Linked_List;
