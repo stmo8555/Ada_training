@@ -1,0 +1,12 @@
+name = "word_tool"
+description = "My first crate"
+version = "0.1.0-dev"
+
+authors = ["my name"]
+maintainers = ["my name <example@example.com>"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
+
+executables = ["word_tool"]
+
