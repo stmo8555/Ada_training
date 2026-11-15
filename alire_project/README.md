@@ -22,5 +22,5 @@ Project layout, `alire.toml`, dependencies and versions, `alr build`,
 
 ## Done when
 
-The word counter builds and runs with `alr run -- <file>`, using at least
+The word counter builds and runs with `alr run -a <file>`, using at least
 one crate.

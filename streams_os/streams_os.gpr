@@ -5,6 +5,16 @@ project Streams_Os is
    for Create_Missing_Dirs use "True";
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-gnatef", "-gnata", "-gnatwa", "-gnat2022");
+      for Default_Switches ("Ada") use ("-gnatef", "-gnata", "-gnatwa", "-gnat2022", "-g");
    end Compiler;
+
+   package Binder is
+      --  Symbolic traceback (file:line) on unhandled exceptions
+      for Default_Switches ("Ada") use ("-Es");
+   end Binder;
+
+   package Linker is
+      --  No PIE, so the traceback addresses can be turned into file:line
+      for Default_Switches ("Ada") use ("-no-pie");
+   end Linker;
 end Streams_Os;

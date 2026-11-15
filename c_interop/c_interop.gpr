@@ -1,11 +1,17 @@
 project C_Interop is
    for Languages use ("Ada", "C");
    for Source_Dirs use ("./src");
-   for Main use ("main.adb");
+   for Main use ("main.adb", "c_main.c");
    for Object_Dir use "obj";
    for Create_Missing_Dirs use "True";
 
    package Compiler is
       for Default_Switches ("Ada") use ("-gnatef", "-gnata", "-gnatwa", "-gnat2022");
    end Compiler;
+
+   package Linker is
+      --  C math library, for cos and friends
+      for Default_Switches ("Ada") use ("-lm");
+      for Default_Switches ("C") use ("-lm");
+   end Linker;
 end C_Interop;

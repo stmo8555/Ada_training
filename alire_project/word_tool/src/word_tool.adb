@@ -8,6 +8,7 @@ with Ada.Strings.Maps;      use Ada.Strings.Maps;
 with Ada.Strings.Hash;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Characters.Handling;
+with Tokenize;              use Tokenize;
 
 procedure Word_Tool is
 
@@ -50,25 +51,14 @@ begin
     Open (F_Type, In_File, File_Name);
     while not End_Of_File (F_Type) loop
         declare
-            S : constant String := Get_Line (F_Type);
-            F : Positive;
-            L : Natural;
-            I : Natural := 1;
             C : Natural_Hashed_Maps.Cursor;
+            S : constant String := Get_Line (F_Type);
         begin
-            while I in S'Range loop
-                Find_Token
-                   (Source => S,
-                    Set    => Letters,
-                    From   => I,
-                    Test   => Inside,
-                    First  => F,
-                    Last   => L);
-                exit when L = 0;
-
+            for W of Tokenize.Split (S, not Letters, Collate_Separator => True)
+            loop
                 declare
                     Word : constant String :=
-                       Ada.Characters.Handling.To_Lower (S (F .. L));
+                       Ada.Characters.Handling.To_Lower (To_String (W));
                 begin
                     C := M.Find (Word);
                     if Has_Element (C) then
@@ -77,7 +67,6 @@ begin
                         M.Insert (Word, 1);
                     end if;
                 end;
-                I := L + 1;
             end loop;
         end;
     end loop;

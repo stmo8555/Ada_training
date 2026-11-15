@@ -10,3 +10,5 @@ tags = []
 
 executables = ["word_tool"]
 
+[[depends-on]]
+splitter = "^1.0.2"
