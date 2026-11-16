@@ -12,8 +12,8 @@ with Ada.IO_Exceptions;
 
 procedure Main is
     package EV renames Ada.Environment_Variables;
-    OP_INDEX          : constant Positive := 1;
-    TODO_INDEX        : constant Positive := 2;
+    OP_INDEX          : constant := 1;
+    TODO_INDEX        : constant := 2;
     TODO_FILE         : constant String := "Todo_List_Record";
     TODO_DUMMY_HEADER : constant String := "__TODO__";
     TODO_ENV          : constant String := "TODO_DIR";

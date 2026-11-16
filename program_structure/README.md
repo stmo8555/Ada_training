@@ -8,7 +8,7 @@ How bigger Ada programs are organised.
    `Library.Books` and a `private package Library.Storage` that only the
    `Library` family can use. Try to `with` it from `Main` and read the
    error.
-2. **`limited with`.** `Authors` and `Books` each need an access to the
+2. **`limited with`.** `Library.Authors` and `Library.Books` each need an access to the
    other (an author has books, a book has an author). Plain `with` both
    ways fails; fix it with `limited with`.
 3. **`separate`.** Move one long subprogram body into its own file with
