@@ -1,0 +1,15 @@
+Literal: Numbers
+Operator: + - * / =
+Parentheses: ( ) groups and sets orders
+
+expression -> literal 
+            | unary
+            | binary
+            | grouping;
+
+grouping -> "(" expression ")";
+literal -> NUMBER;
+unary -> "-" literal;
+binary -> expression operator expression;
+operator -> "+", "-", "*", "/", "=";
+
