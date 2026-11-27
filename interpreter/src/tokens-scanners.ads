@@ -1,10 +1,11 @@
 package Tokens.Scanners is
     type Scanner (Length : Natural) is tagged Record
-        Source  : String (1 .. Length);
-        Start   : Positive := 1;
-        Current : Positive := 1;
-        Line    : Positive := 1;
-        Tokens  : Token_Vector.Vector;
+        Source    : String (1 .. Length);
+        Start     : Positive := 1;
+        Current   : Positive := 1;
+        Line      : Positive := 1;
+        Tokens    : Token_Vector.Vector;
+        Has_Error : Boolean := False;
     end record;
 
     function Create_Scanner (Line : String) return Scanner

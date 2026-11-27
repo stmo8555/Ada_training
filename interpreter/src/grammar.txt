@@ -13,3 +13,23 @@ unary -> "-" literal;
 binary -> expression operator expression;
 operator -> "+", "-", "*", "/", "=";
 
+--- Interpreter exercise grammar (EBNF) ---
+
+input      = (assignment | expression) EOF ;
+assignment = "let" IDENTIFIER "=" expression ;
+expression = term { ("+" | "-") term } ;
+term       = unary { ("*" | "/") unary } ;
+unary      = [ "-" ] primary ;
+primary    = NUMBER | IDENTIFIER | "(" expression ")" ;
+
+{ ... } means zero or more repetitions; [ ... ] means optional.
+NUMBER and IDENTIFIER are scanner tokens. "let" is a reserved keyword.
+EOF marks the end of the current input line, not the end of the REPL session.
+The REPL handles empty lines and "quit" before parsing.
+
+The layers give unary minus higher precedence than "*" and "/", which bind
+more tightly than "+" and "-". Evaluate or build each repeated operator
+sequence from left to right: 8 / 4 / 2 groups as (8 / 4) / 2.
+Parentheses contain exactly one expression. "=" is only used in assignments.
+Update a variable only after the entire assignment parses and its expression
+evaluates successfully.

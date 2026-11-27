@@ -1,4 +1,5 @@
 with Ada.Characters.Handling; use Ada.Characters.Handling;
+with Ada.Text_IO;             use Ada.Text_IO;
 
 package body Tokens.Scanners is
     function Scan (S : in out Scanner) return Token_Vector.Vector is
@@ -10,7 +11,9 @@ package body Tokens.Scanners is
         end loop;
 
         S.Tokens.Append
-           (Token'(EOF, Null_Unbounded_String, No_Literal, S.Line));
+           (Token'
+               (EOF, Null_Unbounded_String, No_Literal, S.Line,
+                Position => S.Current));
         return S.Tokens;
     end Scan;
 
@@ -26,6 +29,12 @@ package body Tokens.Scanners is
     begin
         Ignore := S.Advance;
     end Advance;
+
+    function Scanned_Text (S : Scanner) return String is
+        Last_Consumed : constant Natural := S.Current - 1;
+    begin
+        return S.Source (S.Start .. Last_Consumed);
+    end Scanned_Text;
 
     procedure Scan_Token (S : in out Scanner) is
         Letter : constant Character := S.Advance;
@@ -53,8 +62,20 @@ package body Tokens.Scanners is
                 S.Add_Token (EQUALS, No_Literal);
 
             when 'a' .. 'z' | 'A' .. 'Z'   =>
-                raise Program_Error
-                   with "TODO: identifier scanning not implemented";
+                loop
+                    exit when not Is_Basic (S.Peek);
+                    S.Advance;
+                end loop;
+                declare
+                    Text : constant String := Scanned_Text (S);
+                begin
+                    if Text = "let" then
+                        S.Add_Token (LET, Text_Literal (Scanned_Text (S)));
+                    else
+                        S.Add_Token
+                           (IDENTIFIER, Text_Literal (Scanned_Text (S)));
+                    end if;
+                end;
 
             when '0' .. '9'                =>
                 loop
@@ -72,14 +93,13 @@ package body Tokens.Scanners is
 
                 S.Add_Token
                    (NUMBER,
-                    Number_Literal
-                       (Long_Float'Value
-                           (S.Source (S.Start .. S.Current - 1))));
+                    Number_Literal (Long_Float'Value (Scanned_Text (S))));
 
             when ASCII.LF | ASCII.HT | ' ' =>
                 null;
 
             when others                    =>
+                S.Has_Error := True;
                 declare
                     End_Position : Positive := S.Current;
                     Error_At     : constant Positive := S.Current - 1;
@@ -98,17 +118,19 @@ package body Tokens.Scanners is
                            [others => '-'];
                     begin
                         Error_Marker (Error_At) := '^';
-                        raise Constraint_Error
-                           with
-                              """"
-                              & Letter
-                              & """ is not supported here"
-                              & ASCII.LF
-                              & S.Source (Context_Range)
-                              & ASCII.LF
-                              & Error_Marker
-                              & " at line"
-                              & S.Line'Image;
+                        Put_line
+                           (Standard_Error,
+                            """"
+                            & Letter
+                            & """ is not supported here"
+                            & ASCII.LF
+                            & S.Source (Context_Range)
+                            & ASCII.LF
+                             & Error_Marker
+                             & " at line"
+                             & S.Line'Image
+                             & ", character"
+                             & Error_At'Image);
                     end;
                 end;
         end case;
@@ -118,8 +140,9 @@ package body Tokens.Scanners is
        (S : in out Scanner; T_Type : Token_Type; Literal : Literal_Value)
     is
         Lexeme : constant Unbounded_String :=
-           To_Unbounded_String (S.Source (S.Start .. S.Current - 1));
+           To_Unbounded_String (Scanned_Text (S));
     begin
-        S.Tokens.Append (Token'(T_Type, Lexeme, Literal, S.Line));
+        S.Tokens.Append
+           (Token'(T_Type, Lexeme, Literal, S.Line, Position => S.Start));
     end Add_Token;
 end Tokens.Scanners;

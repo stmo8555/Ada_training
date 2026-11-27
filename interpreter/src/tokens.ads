@@ -12,7 +12,8 @@ package Tokens is
         RIGHT_PAREN,
         EQUALS,
         NUMBER,
-        TEXT,
+        IDENTIFIER,
+        LET,
         EOF);
 
     type Literal_Kind is (NO_VALUE, NUMERIC_VALUE, TEXT_VALUE);
@@ -35,10 +36,11 @@ package Tokens is
     function No_Literal return Literal_Value;
 
     type Token is record
-        T_Type  : Token_Type;
-        Lexeme  : Unbounded_String;
-        Literal : Literal_Value;
-        Line    : Natural;
+        T_Type   : Token_Type;
+        Lexeme   : Unbounded_String;
+        Literal  : Literal_Value;
+        Line     : Natural;
+        Position : Positive;
     end record;
 
     package Token_Vector is new
